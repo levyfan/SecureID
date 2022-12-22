@@ -9,7 +9,7 @@ A faster implementation of ECC-based DID intersection than [SecureUnionID](https
 First, you should build and install [mcl](https://github.com/herumi/mcl) into system path
 
 ```shell
-git clone https://github.com/herumi/mcl
+git clone https://github.com/herumi/mcl.git
 cd mcl
 mkdir build
 cd build
