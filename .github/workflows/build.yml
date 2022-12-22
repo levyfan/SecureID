@@ -1,0 +1,53 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Clone mcl
+        uses: actions/checkout@v3
+        with:
+          repository: herumi/mcl
+          path: './mcl'
+          ref: v1.75
+      - name: Build mcl
+        run: |
+          cd ./mcl
+          mkdir build
+          cd build
+          cmake ..
+          make
+          sudo make install
+          sudo ldconfig /usr/local/lib
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.15
+      - name: Test GO
+        run: |
+          cd ./go
+          go test SecureID -tags bn256
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+      - name: Build with Maven
+        run: mvn --batch-mode --update-snapshots package
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+      - name: Test with python
+        run: python secure_id_test.py
+      - name: Build C++
+        run: |
+          mkdir build
+          cd build
+          cmake -DCMAKE_CXX_COMPILER=clang++ ..
+          make
+          make test

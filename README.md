@@ -1,5 +1,7 @@
 # SecureID
 
+![ci workflow](https://github.com/levyfan/SecureID/actions/workflows/build.yml/badge.svg)
+
 A faster implementation of ECC-based DID intersection than [SecureUnionID](https://github.com/volcengine/SecureUnionID)
 
 # INSTALL
@@ -9,7 +11,10 @@ First, you should build and install [mcl](https://github.com/herumi/mcl) into sy
 ```shell
 git clone https://github.com/herumi/mcl
 cd mcl
-make -j4
+mkdir build
+cd build
+cmake ..
+make
 sudo make install
 ```
 
