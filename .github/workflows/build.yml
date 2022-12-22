@@ -17,6 +17,9 @@ jobs:
       - name: Build mcl
         run: |
           cd ./mcl
+          mkdir build
+          cd build
+          cmake ..
           make
           sudo make install
       - name: Set up Go
