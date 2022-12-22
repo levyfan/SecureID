@@ -9,7 +9,10 @@ First, you should build and install [mcl](https://github.com/herumi/mcl) into sy
 ```shell
 git clone https://github.com/herumi/mcl
 cd mcl
-make -j4
+mkdir build
+cd build
+cmake ..
+make
 sudo make install
 ```
 
