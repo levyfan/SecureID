@@ -1,5 +1,7 @@
 # SecureID
 
+![ci workflow](https://github.com/levyfan/SecureID/actions/workflows/build.yml/badge.svg)
+
 A faster implementation of ECC-based DID intersection than [SecureUnionID](https://github.com/volcengine/SecureUnionID)
 
 # INSTALL

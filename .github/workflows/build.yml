@@ -44,3 +44,10 @@ jobs:
           python-version: 3.9
       - name: Test with python
         run: python secure_id_test.py
+      - name: Build C++
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          make
+          make test
