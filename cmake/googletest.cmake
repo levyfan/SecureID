@@ -47,7 +47,4 @@ ExternalProject_Add(googletest
         -DBUILD_GMOCK:BOOL=OFF
         -DBUILD_GTEST:BOOL=ON
         -Dgtest_force_shared_crt:BOOL=ON
-        CMAKE_ARGS
-        -DCMAKE_C_FLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
-        -DCMAKE_CXX_FLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
         )
