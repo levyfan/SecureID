@@ -51,6 +51,8 @@ TEST_F(SecureIDTest, sign1) {
 }
 
 int main(int argc, char **argv) {
+    mcl::bn::initPairing();
+
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
