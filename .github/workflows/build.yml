@@ -13,7 +13,7 @@ jobs:
         with:
           repository: herumi/mcl
           path: './mcl'
-          ref: v1.75
+          ref: v1.76
       - name: Build mcl
         run: |
           cd ./mcl
