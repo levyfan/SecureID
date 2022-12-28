@@ -47,4 +47,6 @@ ExternalProject_Add(googletest
         -DBUILD_GMOCK:BOOL=OFF
         -DBUILD_GTEST:BOOL=ON
         -Dgtest_force_shared_crt:BOOL=ON
+        -DCMAKE_C_COMPILER:STRING=${CMAKE_C_COMPILER}
+        -DCMAKE_CXX_COMPILER:STRING=${CMAKE_CXX_COMPILER}
         )
