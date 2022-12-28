@@ -18,18 +18,18 @@ protected:
 TEST_F(SecureIDTest, compute) {
     const char msg[9] = "38654201";
 
-    unsigned char signed_id[32];
+    unsigned char signed_id[SID_BYTE_SIZE];
     secret_key.sign1(signed_id, msg, 8);
 
     mcl::bn::Fr random;
     random.setByCSPRNG();
 
-    unsigned char blinded[32], signed2[32], unblinded[32];
+    unsigned char blinded[SID_BYTE_SIZE], signed2[SID_BYTE_SIZE], unblinded[SID_BYTE_SIZE];
     public_key.blind(blinded, msg, 8, &random);
     secret_key.sign2(signed2, blinded);
     public_key.unblind(unblinded, signed2, &random);
 
-    for (int i = 0; i < 32; ++i) {
+    for (int i = 0; i < SID_BYTE_SIZE; ++i) {
         ASSERT_EQ(signed_id[i], unblinded[i]);
     }
 }
@@ -38,10 +38,10 @@ TEST_F(SecureIDTest, sign1) {
     SecureID::SecretKey sk;
     *reinterpret_cast<mcl::bn::Fr*>(&sk) = 123456;
 
-    unsigned char signed_id[32];
+    unsigned char signed_id[SID_BYTE_SIZE];
     sk.sign1(signed_id, "hello world", 11);
 
-    char hex[64];
+    char hex[SID_BYTE_SIZE * 2];
     char *ptr = hex;
     for (unsigned char i : signed_id) {
         ptr += sprintf(ptr, "%02x", i);
