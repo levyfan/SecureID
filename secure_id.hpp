@@ -6,11 +6,15 @@
 
 namespace SecureID {
 
+#define SID_BYTE_SIZE 32
+
     class Init {
     public:
         Init() {
             mcl::bn::initPairing();
-            mcl::bn::setMapToMode(MCL_MAP_TO_MODE_ORIGINAL);
+            if (!mcl::bn::setMapToMode(MCL_MAP_TO_MODE_ORIGINAL)) {
+                throw std::invalid_argument("SetMapToMode");
+            }
             basePoint.setStr("1 0x2523648240000001BA344D80000000086121000000000013A700000000000012 0x01", 16);
         }
 
@@ -21,20 +25,29 @@ namespace SecureID {
 
     class PublicKey : public mcl::bn::G1 {
     public:
-        void blind(unsigned char out[32], const char *msg, size_t msg_len, const mcl::bn::Fr* random) {
+        void blind(unsigned char out[SID_BYTE_SIZE], const char *msg, size_t msg_len, const mcl::bn::Fr* random) {
             mcl::bn::G1 gin, gout;
             mcl::bn::hashAndMapToG1(gin, msg, msg_len);
             mcl::bn::G1::mul(gout, _init.basePoint, *random);
             mcl::bn::G1::add(gout, gin, gout); // IN + r * G
-            gout.serialize(out, 32);
+            size_t n = gout.serialize(out, SID_BYTE_SIZE);
+            if (n == 0) {
+                throw std::invalid_argument("err serialize");
+            }
         }
 
-        void unblind(unsigned char out[32], unsigned char in[32], const mcl::bn::Fr* random) {
+        void unblind(unsigned char out[SID_BYTE_SIZE], unsigned char in[SID_BYTE_SIZE], const mcl::bn::Fr* random) {
             mcl::bn::G1 gin, gout;
-            gin.deserialize(in, 32);
+            size_t n = gin.deserialize(in, SID_BYTE_SIZE);
+            if (n != SID_BYTE_SIZE) {
+                throw std::invalid_argument("err deserialize");
+            }
             mcl::bn::G1::mul(gout, *this, *random);
             mcl::bn::G1::sub(gout, gin, gout); // IN - r * Q
-            gout.serialize(out, 32);
+            n = gout.serialize(out, SID_BYTE_SIZE);
+            if (n == 0) {
+                throw std::invalid_argument("err serialize");
+            }
         }
     };
 
@@ -46,18 +59,27 @@ namespace SecureID {
             return sk;
         }
 
-        void sign1(unsigned char out[32], const char *msg, size_t msg_len) {
+        void sign1(unsigned char out[SID_BYTE_SIZE], const char *msg, size_t msg_len) {
             mcl::bn::G1 gin, gout;
             mcl::bn::hashAndMapToG1(gin, msg, msg_len);
             mcl::bn::G1::mul(gout, gin, *this);
-            gout.serialize(out, 32);
+            size_t n = gout.serialize(out, SID_BYTE_SIZE);
+            if (n == 0) {
+                throw std::invalid_argument("err serialize");
+            }
         }
 
-        void sign2(unsigned char out[32], unsigned char in[32]) {
+        void sign2(unsigned char out[SID_BYTE_SIZE], unsigned char in[SID_BYTE_SIZE]) {
             mcl::bn::G1 gin, gout;
-            gin.deserialize(in, 32);
+            size_t n = gin.deserialize(in, SID_BYTE_SIZE);
+            if (n != SID_BYTE_SIZE) {
+                throw std::invalid_argument("err deserialize");
+            }
             mcl::bn::G1::mul(gout, gin, *this);
-            gout.serialize(out, 32);
+            n = gout.serialize(out, SID_BYTE_SIZE);
+            if (n == 0) {
+                throw std::invalid_argument("err serialize");
+            }
         }
 
         PublicKey public_key() {
