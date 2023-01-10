@@ -12,6 +12,8 @@ public class MCL {
     static final int MCLBN_FR_UNIT_SIZE;
     static final int MCLBN_COMPILED_TIME_VAR;
     static final int MCL_MAP_TO_MODE_ORIGINAL = 0;
+    static final int SIZEOF_G1;
+    static final int SIZEOF_FR;
     static final G1 basePoint;
 
     static native int mclBn_init(int curve, int compiledTimeVar);
@@ -27,6 +29,8 @@ public class MCL {
     static native void mclBnG1_sub(G1 z, G1 x, G1 y);
     static native long mclBnG1_serialize(byte[] buf, long maxBufSize, G1 gx);
     static native long mclBnG1_deserialize(G1 gx, byte[] buf, long bufSize);
+    static native long mclBnFr_getStr(byte[] buf, long maxBufSize, Fr x, int ioMode);
+    static native long mclBnG1_getStr(byte[] buf, long maxBufSize, G1 x, int ioMode);
     static native int mclBnG1_setStr(G1 x, byte[] buf, long bufSize, int ioMode);
     static native void mclBnFr_setInt32(Fr y, int x);
 
@@ -34,6 +38,8 @@ public class MCL {
         MCLBN_FP_UNIT_SIZE = 4;
         MCLBN_FR_UNIT_SIZE = 4;
         MCLBN_COMPILED_TIME_VAR = ((MCLBN_FR_UNIT_SIZE) * 10 + (MCLBN_FP_UNIT_SIZE));
+        SIZEOF_G1 = MCLBN_FP_UNIT_SIZE * 8 * 3;
+        SIZEOF_FR = MCLBN_FR_UNIT_SIZE * 8;
         Native.register("mclbn256");
         mclBn_init(mclBn_CurveFp254BNb, MCLBN_COMPILED_TIME_VAR);
         mclBn_setMapToMode(MCL_MAP_TO_MODE_ORIGINAL);
@@ -42,8 +48,6 @@ public class MCL {
     }
 
     public static class G1 extends Memory {
-
-        static final int SIZEOF_G1 = MCLBN_FP_UNIT_SIZE * 8 * 3;
 
         G1() {
             super(SIZEOF_G1);
@@ -62,6 +66,15 @@ public class MCL {
             if (err != 0) {
                 throw new IllegalArgumentException(("err mclBnG1_setStr " + err));
             }
+        }
+
+        String getString(int base) {
+            byte[] buf = new byte[2048];
+            long n = mclBnG1_getStr(buf, buf.length, this, base);
+            if (n == 0) {
+                throw new IllegalArgumentException("err mclBnG1_getStr");
+            }
+            return new String(buf, 0, (int) n);
         }
 
         public byte[] serialize() {
@@ -83,8 +96,6 @@ public class MCL {
 
     public static class Fr extends Memory {
 
-        static final int SIZEOF_FR = MCLBN_FR_UNIT_SIZE * 8;
-
         Fr() {
             super(SIZEOF_FR);
         }
@@ -104,6 +115,15 @@ public class MCL {
 
         void setInt(int v) {
             mclBnFr_setInt32(this, v);
+        }
+
+        String getString(int base) {
+            byte[] buf = new byte[2048];
+            long n = mclBnFr_getStr(buf, buf.length, this, base);
+            if (n == 0) {
+                throw new IllegalArgumentException("err mclBnFr_getStr");
+            }
+            return new String(buf, 0, (int) n);
         }
 
         public byte[] serialize() {
