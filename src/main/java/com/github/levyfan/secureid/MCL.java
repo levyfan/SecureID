@@ -30,6 +30,7 @@ public class MCL {
     static native long mclBnG1_serialize(byte[] buf, long maxBufSize, G1 gx);
     static native long mclBnG1_deserialize(G1 gx, byte[] buf, long bufSize);
     static native long mclBnFr_getStr(byte[] buf, long maxBufSize, Fr x, int ioMode);
+    static native int mclBnFr_setStr(Fr x, byte[] buf, long bufSize, int ioMode);
     static native long mclBnG1_getStr(byte[] buf, long maxBufSize, G1 x, int ioMode);
     static native int mclBnG1_setStr(G1 x, byte[] buf, long bufSize, int ioMode);
     static native void mclBnFr_setInt32(Fr y, int x);
@@ -115,6 +116,14 @@ public class MCL {
 
         void setInt(int v) {
             mclBnFr_setInt32(this, v);
+        }
+
+        void setString(String s, int base) {
+            byte[] buf = s.getBytes();
+            int err = mclBnFr_setStr(this, buf, buf.length, base);
+            if (err != 0) {
+                throw new IllegalArgumentException(("err mclBnFr_setStr " + err));
+            }
         }
 
         String getString(int base) {

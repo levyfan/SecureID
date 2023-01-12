@@ -1,11 +1,30 @@
 package com.github.levyfan.secureid;
 
-public class SecretKey extends MCL.Fr {
+import java.math.BigInteger;
+import java.security.interfaces.ECPrivateKey;
+import java.security.spec.ECParameterSpec;
+import java.security.spec.ECPrivateKeySpec;
+
+public class SecretKey extends MCL.Fr implements ECPrivateKey {
 
     public static SecretKey generate() {
         SecretKey sk = new SecretKey();
         sk.setByCSPRNG();
         return sk;
+    }
+
+    public SecretKey() {
+        super();
+    }
+
+    public SecretKey(ECPrivateKeySpec spec) {
+        super();
+        if (!KeyUtil.BN254.getCurve().equals(spec.getParams().getCurve())) {
+            throw new IllegalArgumentException("curve not supported");
+        }
+        BigInteger s = spec.getS();
+        String str = s.toString(16);
+        setString(str, 16);
     }
 
     public PublicKey publicKey() {
@@ -30,5 +49,31 @@ public class SecretKey extends MCL.Fr {
             MCL.g1Mul(gout, gin, this);
             return gout.serialize();
         }
+    }
+
+    @Override
+    public BigInteger getS() {
+        String str = getString(16);
+        return new BigInteger(str, 16);
+    }
+
+    @Override
+    public String getAlgorithm() {
+        return "EC";
+    }
+
+    @Override
+    public String getFormat() {
+        return null;
+    }
+
+    @Override
+    public byte[] getEncoded() {
+        return null;
+    }
+
+    @Override
+    public ECParameterSpec getParams() {
+        return KeyUtil.BN254;
     }
 }
