@@ -34,6 +34,13 @@ class BnFr(Structure):
     def set_int(self, x: int):
         libmcl.mclBnFr_setInt32(byref(self), x)
 
+    def get_string(self, base: int):
+        buf = create_string_buffer(2048)
+        n = libmcl.mclBnFr_getStr(byref(buf), len(buf), byref(self), base)
+        if n == 0:
+            raise ValueError("err mclBnFr_getStr")
+        return str(buf[:n])
+
     def serialize(self):
         buf = create_string_buffer(libmcl.mclBn_getFrByteSize())
         n = libmcl.mclBnFr_serialize(byref(buf), len(buf), byref(self))
