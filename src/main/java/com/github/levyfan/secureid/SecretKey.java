@@ -1,6 +1,7 @@
 package com.github.levyfan.secureid;
 
 import java.math.BigInteger;
+import java.security.InvalidKeyException;
 import java.security.interfaces.ECPrivateKey;
 import java.security.spec.ECParameterSpec;
 import java.security.spec.ECPrivateKeySpec;
@@ -64,12 +65,16 @@ public class SecretKey extends MCL.Fr implements ECPrivateKey {
 
     @Override
     public String getFormat() {
-        return null;
+        return "PKCS#8";
     }
 
     @Override
     public byte[] getEncoded() {
-        return null;
+        try {
+            return KeyUtil.encode(this);
+        } catch (InvalidKeyException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     @Override

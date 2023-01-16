@@ -1,6 +1,7 @@
 package com.github.levyfan.secureid;
 
 import java.math.BigInteger;
+import java.security.InvalidKeyException;
 import java.security.interfaces.ECPublicKey;
 import java.security.spec.ECParameterSpec;
 import java.security.spec.ECPoint;
@@ -64,12 +65,16 @@ public class PublicKey extends MCL.G1 implements ECPublicKey {
 
     @Override
     public String getFormat() {
-        return null;
+        return "X.509";
     }
 
     @Override
     public byte[] getEncoded() {
-        return null;
+        try {
+            return KeyUtil.encode(this);
+        } catch (InvalidKeyException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     @Override
