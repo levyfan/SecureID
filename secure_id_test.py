@@ -36,7 +36,7 @@ class KeyUtilTestCase(unittest.TestCase):
         sk1 = secure_id_util.import_key(sk_der, private=True)
         self.assertEqual(sk.get_string(16), sk1.get_string(16))
 
-    def test_load_java_private_pem(self):
+    def test_read_java_private_pem(self):
         pem = "-----BEGIN PRIVATE KEY-----\n" \
               "MIICAQIBADCB6gYHKoZIzj0CATCB3gIBATArBgcqhkjOPQEBAiAlI2SCQAAAAbo0\n" \
               "TYAAAAAIYSEAAAAAABOnAAAAAAAAEzBEBCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n" \
