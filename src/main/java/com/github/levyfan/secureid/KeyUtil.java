@@ -24,7 +24,7 @@ public class KeyUtil {
     private static final BigInteger N = new BigInteger("2523648240000001BA344D8000000007FF9F800000000010A10000000000000D", 16);
 
     public static final ECParameterSpec BN254 = new ECParameterSpec(
-            new EllipticCurve(new ECFieldFp(P), BigInteger.ZERO, BigInteger.TWO),
+            new EllipticCurve(new ECFieldFp(P), BigInteger.ZERO, BigInteger.valueOf(2)),
             new ECPoint(GX, BigInteger.ONE),
             N,
             1);
@@ -43,5 +43,11 @@ public class KeyUtil {
     public static SecretKey decodePrivate(byte[] bytes) throws InvalidKeySpecException {
         ECPrivateKey key = (ECPrivateKey) ECBCKF.generatePrivate(new PKCS8EncodedKeySpec(bytes));
         return new SecretKey(new ECPrivateKeySpec(key.getS(), key.getParams()));
+    }
+
+    public static KeyPair generateKeyPair() {
+        SecretKey sk = new SecretKey();
+        sk.setByCSPRNG();
+        return new KeyPair(sk.publicKey(), sk);
     }
 }
