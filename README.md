@@ -2,7 +2,8 @@
 
 ![ci workflow](https://github.com/levyfan/SecureID/actions/workflows/build.yml/badge.svg)
 
-A faster implementation of ECC-based DID intersection than [SecureUnionID](https://github.com/volcengine/SecureUnionID)
+A faster implementation of ECC-based DID intersection than [SecureUnionID](https://github.com/volcengine/SecureUnionID).
+The elliptic curve behind is chosen to be [bn254](https://neuromancer.sk/std/bn/bn254) (aka Fp254BNb).
 
 # INSTALL
 
